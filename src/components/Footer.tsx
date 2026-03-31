@@ -4,7 +4,8 @@ import { Server, Twitter, Github, Linkedin, MapPin, Mail, Phone } from "lucide-r
 export default function Footer() {
   return (
     <footer className="bg-slate-900 pt-24 pb-12 border-t border-slate-800 text-white">
-      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12">
+      {/* Changed lg:grid-cols-6 to lg:grid-cols-5 because we removed the Solutions column */}
+      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
         
         {/* Brand Column */}
         <div className="lg:col-span-2 space-y-6">
@@ -16,38 +17,31 @@ export default function Footer() {
             Enterprise infrastructure for the next generation of developers. 
             High-performance VPS and Dedicated servers with 99.99% uptime, powered by NVMe Gen5.
           </p>
+          {/* IMAGE WALA DATA YAHAN UPDATE KIYA HAI */}
           <div className="space-y-3 pt-4">
-             <div className="flex items-center gap-3 text-slate-300 text-sm"><Phone size={16} className="text-blue-500"/> +91 90156 81102</div>
-             <div className="flex items-center gap-3 text-slate-300 text-sm"><Mail size={16} className="text-blue-500"/> support@serverbucket.com</div>
-             <div className="flex items-center gap-3 text-slate-300 text-sm"><MapPin size={16} className="text-blue-500"/> Delhi, India (Headquarters)</div>
+             <div className="flex items-center gap-3 text-slate-300 text-sm">
+               <Phone size={16} className="text-blue-500"/> +91 9799116204
+             </div>
+             <div className="flex items-center gap-3 text-slate-300 text-sm">
+               <Mail size={16} className="text-blue-500"/> info@titservices.online
+             </div>
+             <div className="flex items-center gap-3 text-slate-300 text-sm">
+               <MapPin size={16} className="text-blue-500"/> Dausa, Rajasthan, India
+             </div>
           </div>
         </div>
 
-        {/* Links Column 1 */}
+        {/* Links Column 1: Services (Updated) */}
         <div>
-          <h4 className="font-bold text-white mb-6 uppercase text-xs tracking-widest">Servers</h4>
+          <h4 className="font-bold text-white mb-6 uppercase text-xs tracking-widest">Services</h4>
           <ul className="space-y-4 text-sm font-medium text-slate-400">
             <li><Link href="/vps" className="hover:text-blue-500 transition-colors">Linux NVMe VPS</Link></li>
-            <li><Link href="/vps" className="hover:text-blue-500 transition-colors">Windows RDP VPS</Link></li>
-            <li><Link href="/dedicated" className="hover:text-blue-500 transition-colors">Bare Metal Servers</Link></li>
             <li><Link href="/cluster" className="hover:text-blue-500 transition-colors">High-Availability Nodes</Link></li>
-            <li><Link href="/colocation" className="hover:text-blue-500 transition-colors">Rack Colocation</Link></li>
+            <li><Link href="/remote-it-support" className="hover:text-blue-500 transition-colors">Remote IT Support</Link></li>
           </ul>
         </div>
 
-        {/* Links Column 2 */}
-        <div>
-          <h4 className="font-bold text-white mb-6 uppercase text-xs tracking-widest">Solutions</h4>
-          <ul className="space-y-4 text-sm font-medium text-slate-400">
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">E-Commerce Hosting</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Database Clusters</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Gaming Servers</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Forex VPS</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Storage Servers</Link></li>
-          </ul>
-        </div>
-
-        {/* Links Column 3 */}
+        {/* Links Column 2: Company */}
         <div>
           <h4 className="font-bold text-white mb-6 uppercase text-xs tracking-widest">Company</h4>
           <ul className="space-y-4 text-sm font-medium text-slate-400">
@@ -59,14 +53,14 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Links Column 4 */}
+        {/* Links Column 3: Legal (Updated) */}
         <div>
           <h4 className="font-bold text-white mb-6 uppercase text-xs tracking-widest">Legal</h4>
           <ul className="space-y-4 text-sm font-medium text-slate-400">
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Privacy Policy</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Terms of Service</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">Refund Policy</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">SLA Agreement</Link></li>
+            <li><Link href="https://titservices.online/privacy.html" className="hover:text-blue-500 transition-colors">Privacy Policy</Link></li>
+            <li><Link href="https://titservices.online/terms.html" className="hover:text-blue-500 transition-colors">Terms & Conditions</Link></li>
+            <li><Link href="https://titservices.online/spam.html" className="hover:text-blue-500 transition-colors">Anti Spam Policy</Link></li>
+            <li><Link href="https://titservices.online/gdpr.html" className="hover:text-blue-500 transition-colors">GDPR</Link></li>
           </ul>
         </div>
       </div>

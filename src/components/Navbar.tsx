@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Server, Menu, X, Globe, Cpu, Layers, HardDrive, MapPin } from "lucide-react";
+import { Server, Menu, X, Globe, Layers, MapPin, Headset } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -9,10 +9,10 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "VPS", href: "/vps", icon: <Globe className="h-4 w-4" /> },
-    { name: "Dedicated", href: "/dedicated", icon: <Cpu className="h-4 w-4" /> },
-    { name: "Colocation", href: "/colocation", icon: <HardDrive className="h-4 w-4" /> },
     { name: "Cluster", href: "/cluster", icon: <Layers className="h-4 w-4" /> },
     { name: "Locations", href: "/locations", icon: <MapPin className="h-4 w-4" /> },
+    // NAYA LINK ADD KIYA HAI YAHAN 👇
+    { name: "IT Support", href: "/remote-it-support", icon: <Headset className="h-4 w-4" /> },
   ];
 
   return (

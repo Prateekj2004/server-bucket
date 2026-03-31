@@ -30,28 +30,35 @@ export default function ContactPage() {
             <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-xl shadow-slate-200/50">
                <h3 className="text-2xl font-black text-slate-900 mb-8">Direct Lines</h3>
                <div className="space-y-6">
+                 
+                 {/* Updated Phone */}
                  <div className="flex gap-4 items-start">
                    <div className="bg-blue-50 text-blue-600 p-3 rounded-2xl"><PhoneCall size={20}/></div>
                    <div>
-                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Sales & Billing</p>
-                     <p className="text-lg font-black text-slate-900">+91 90156 81102</p>
+                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Phone</p>
+                     <p className="text-lg font-black text-slate-900">+91 9799116204</p>
                    </div>
                  </div>
+
+                 {/* Updated Email */}
                  <div className="flex gap-4 items-start border-t border-slate-100 pt-6">
-                   <div className="bg-green-50 text-green-600 p-3 rounded-2xl"><MessageSquare size={20}/></div>
+                   <div className="bg-green-50 text-green-600 p-3 rounded-2xl"><Mail size={20}/></div>
                    <div>
-                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Technical NOC (L3)</p>
-                     <p className="text-lg font-black text-slate-900">Live Chat via Panel</p>
-                     <p className="text-xs text-green-500 font-bold mt-1">Avg Response: &lt; 2 mins</p>
+                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Email</p>
+                     <p className="text-lg font-black text-slate-900">info@titservices.online</p>
+                     <p className="text-xs text-green-500 font-bold mt-1">Avg Response: &lt; 2 hours</p>
                    </div>
                  </div>
+
+                 {/* Updated Address */}
                  <div className="flex gap-4 items-start border-t border-slate-100 pt-6">
                    <div className="bg-orange-50 text-orange-600 p-3 rounded-2xl"><MapPin size={20}/></div>
                    <div>
-                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Headquarters</p>
-                     <p className="text-sm font-bold text-slate-700 leading-relaxed">B-1740 Shastri Nagar,<br/>Delhi-110052, India</p>
+                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Address</p>
+                     <p className="text-sm font-bold text-slate-700 leading-relaxed">Dausa, Rajasthan,<br/>India</p>
                    </div>
                  </div>
+
                </div>
             </div>
 
