@@ -4,18 +4,44 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, Server, Terminal, Database, ChevronDown, Activity, 
-  CheckCircle, Zap, Shield, Cpu, HardDrive, Globe, Star, Quote
+  CheckCircle, Zap, Shield, Cpu, HardDrive, Globe, Star, Quote, MessageCircle, Settings,
+  ChevronLeft, ChevronRight, TrendingUp
 } from "lucide-react";
 
+interface HeroSlide {
+  badge: string;
+  badgeIcon: React.ReactNode;
+  title1: string;
+  title2: string;
+  desc: string;
+  cta1: string;
+  cta2: string;
+}
+
+interface VPSPlan {
+  title: string;
+  badge: string;
+  basePrice: number;
+  features: string[];
+  isPopular: boolean;
+}
+
+interface Testimonial {
+  quote: string;
+  author: string;
+  avatar: string;
+}
+
 export default function Home() {
-  // --- HERO SLIDER DATA ---
-  const heroSlides = [
+  const WHATSAPP_NUMBER: string = "919876543210";
+  
+  const heroSlides: HeroSlide[] = [
     {
       badge: "Tier-IV Certified Infrastructure",
       badgeIcon: <Activity size={14} className="animate-pulse" />,
       title1: "Deploy with",
       title2: "Infinite Power.",
-      desc: "Enterprise-grade hosting solutions engineered for scale. Deploy Linux, Windows, or Custom ISOs on bleeding-edge NVMe Gen5 hardware in under 60 seconds.",
+      desc: "Enterprise-grade hosting solutions engineered for scale. Deploy Linux, or Custom ISOs on bleeding-edge NVMe Gen5 hardware in under 60 seconds.",
       cta1: "Deploy Server",
       cta2: "Talk to an Expert"
     },
@@ -39,86 +65,140 @@ export default function Home() {
     }
   ];
 
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [currency, setCurrency] = useState<"INR" | "USD">("INR");
+  const [includeGST, setIncludeGST] = useState<boolean>(false);
+  const [exchangeRate, setExchangeRate] = useState<number>(83.50);
+  const [isRateLive, setIsRateLive] = useState<boolean>(false);
 
-  // Auto-play slider logic
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [heroSlides.length]);
 
-  // --- EXACT VPS PLANS ---
-  const vpsPlans = [
+  // Replace your existing useEffect for fetchLiveRate with this:
+useEffect(() => {
+  const fetchLiveRate = async () => {
+    try {
+      // This calls the file we created in Step 1
+      const response = await fetch("/api/rate");
+      
+      if (!response.ok) {
+        throw new Error("API Route not responding");
+      }
+
+      const data = await response.json();
+      
+      if (data.rate) {
+        setExchangeRate(data.rate);
+        setIsRateLive(true);
+        console.log("Live Rate Updated:", data.rate);
+      }
+    } catch (err) {
+      // This stops the red console error from crashing your logic
+      console.error("Live rate fetch failed. Using fallback.");
+      setIsRateLive(false); 
+    }
+  };
+
+  fetchLiveRate();
+}, []);
+
+  const GST_RATE: number = 0.18;
+
+  const vpsPlans: VPSPlan[] = [
     {
       title: "KVM VPS-1",
-      badge: "🔥 Save 30%",
-      price: "₹499",
+      badge: "Save 30%",
+      basePrice: 699,
       features: ["2 Core vCPU", "4 GB RAM", "100 GB NVMe", "Unlimited Bandwidth"],
       isPopular: false,
     },
     {
       title: "KVM VPS-2",
-      badge: "🔥 Save 30%",
-      price: "₹799",
+      badge: "Save 30%",
+      basePrice: 999,
       features: ["4 Core vCPU", "8 GB RAM", "150 GB NVMe", "Unlimited Bandwidth"],
       isPopular: true,
     },
     {
       title: "KVM VPS-3",
-      badge: "🔥 Save 30%",
-      price: "₹1499",
+      badge: "Save 30%",
+      basePrice: 1699,
       features: ["6 Core vCPU", "16 GB RAM", "200 GB NVMe", "Unlimited Bandwidth"],
       isPopular: false,
     },
     {
       title: "KVM VPS-4",
-      badge: "🔥 Save 30%",
-      price: "₹2499",
-      features: ["8 Core vCPU", "32 GB RAM", "300 GB NVMe", "Unlimited Bandwidth"],
+      badge: "Save 30%",
+      basePrice: 2199,
+      features: ["8 Core vCPU", "32 GB RAM", "250 GB NVMe", "Unlimited Bandwidth"],
       isPopular: false,
     },
   ];
 
-  // --- TESTIMONIALS DATA ---
-  const testimonials = [
+  const calculatePrice = (basePrice: number): string => {
+    let finalPrice = basePrice;
+    if (includeGST) {
+      finalPrice = finalPrice + (finalPrice * GST_RATE);
+    }
+    
+    if (currency === "USD") {
+      finalPrice = finalPrice / exchangeRate;
+      return "$" + finalPrice.toFixed(2);
+    }
+    
+    return "₹" + Math.round(finalPrice).toString();
+  };
+
+  const testimonials: Testimonial[] = [
     {
       quote: "Titservices provided a seamless deployment for our chat application. The uptime and response time are top-notch!",
       author: "Chatherr",
-      // Placeholder avatars - replace with your actual images if needed
       avatar: "https://i.pravatar.cc/150?img=11" 
+    },{
+      quote: "Titservices Great hosting service with stable performance and minimal downtime. My website loads fast, especially for Indian users, and overall reliability has been excellent. Support team is responsive and helpful whenever needed.",
+      author: "DreamAcco",
+      avatar: "https://i.pravatar.cc/150?img=47" 
     },
     {
-      quote: "Migrating to their NVMe Gen5 servers was the best decision for our e-commerce platform. Lightning fast speeds.",
-      author: "Alex Morgan",
+      quote: "Titservices Reliable hosting with good uptime and smooth performance for my website. Setup was easy, and I’ve had a hassle-free experience so far. Support is quick to respond and resolves issues efficiently.",
+      author: "ProtoMart",
       avatar: "https://i.pravatar.cc/150?img=68"
-    },
-    {
-      quote: "Their Level 3 NOC support is actually 24/7. They helped us resolve a critical database issue at 3 AM on a Sunday.",
-      author: "Sarah Jenkins",
-      avatar: "https://i.pravatar.cc/150?img=47"
     }
   ];
   
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [activeTestimonial, setActiveTestimonial] = useState<number>(0);
+
+  const nextTestimonial = () => {
+    setActiveTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevTestimonial = () => {
+    setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  useEffect(() => {
+    const testimonialTimer = setInterval(() => {
+      nextTestimonial();
+    }, 5000);
+    return () => clearInterval(testimonialTimer);
+  }, [testimonials.length]);
 
   return (
     <div className="relative font-sans bg-white overflow-x-hidden text-slate-900">
       
-      {/* --- PRODUCTION-LEVEL HERO SECTION WITH SLIDER --- */}
       <section className="relative pt-32 pb-40 min-h-[90vh] flex items-center bg-[#0B0F19] overflow-hidden">
-        {/* Animated Grid Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40"></div>
         
-        {/* Glowing Orbs */}
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
             
-            {/* Left Content: Slider Typography & CTA */}
             <div className="flex-1 text-center lg:text-left relative h-[450px] w-full flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 <motion.div 
@@ -160,7 +240,6 @@ export default function Home() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Slider Dots */}
               <div className="absolute -bottom-4 left-0 right-0 lg:right-auto flex justify-center lg:justify-start gap-3">
                 {heroSlides.map((_, idx) => (
                   <button 
@@ -173,10 +252,8 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Right Content: Floating Server Stack Animation */}
             <div className="flex-1 hidden lg:flex justify-center items-center relative perspective-1000 mt-10 lg:mt-0">
               <div className="relative w-full max-w-[500px] h-[400px]">
-                {/* Top Server Node */}
                 <motion.div 
                   initial={{ opacity: 0, y: -50, rotateX: 20, rotateZ: -10 }}
                   animate={{ opacity: 1, y: 0, rotateX: 20, rotateZ: -10 }}
@@ -194,13 +271,12 @@ export default function Home() {
                   <div className="flex items-center gap-4 text-white">
                     <Cpu className="text-blue-500" size={32} />
                     <div>
-                      <p className="font-black text-lg">AMD EPYC™ Gen 4</p>
+                      <p className="font-black text-lg">AMD EPYC Gen 4</p>
                       <p className="text-xs text-slate-400">Load: 14% | Temps: 32°C</p>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Middle Server Node */}
                 <motion.div 
                   initial={{ opacity: 0, y: 0, rotateX: 20, rotateZ: -10 }}
                   animate={{ opacity: 1, y: 80, rotateX: 20, rotateZ: -10 }}
@@ -222,7 +298,6 @@ export default function Home() {
                   </div>
                 </motion.div>
 
-                {/* Bottom Server Node */}
                 <motion.div 
                   initial={{ opacity: 0, y: 50, rotateX: 20, rotateZ: -10 }}
                   animate={{ opacity: 1, y: 160, rotateX: 20, rotateZ: -10 }}
@@ -242,7 +317,6 @@ export default function Home() {
                   </div>
                 </motion.div>
 
-                {/* Decorative floating particles */}
                 <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-4 top-20 text-blue-500 opacity-50"><Server size={24} /></motion.div>
                 <motion.div animate={{ y: [0, 20, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute -left-8 bottom-10 text-indigo-500 opacity-50"><Database size={32} /></motion.div>
               </div>
@@ -252,12 +326,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- PROFESSIONAL VPS PLANS --- */}
       <section id="plans" className="py-32 bg-slate-50 relative">
         <div className="container mx-auto px-6 max-w-[1400px] relative z-10">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">High-Performance <span className="text-blue-600">VPS Plans</span></h2>
             <p className="mt-4 text-slate-500 font-medium max-w-2xl mx-auto">Scalable resources tailored for your projects. Upgrade anytime with zero downtime.</p>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-6 bg-white p-3 rounded-3xl shadow-sm border border-slate-200 max-w-3xl mx-auto">
+            
+            <div className="flex items-center bg-slate-100 p-1.5 rounded-2xl">
+              <button 
+                onClick={() => setCurrency("INR")}
+                className={`px-5 py-2 rounded-xl font-bold text-sm transition-all ${currency === "INR" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+              >
+                INR 
+              </button>
+              <button 
+                onClick={() => setCurrency("USD")}
+                className={`px-5 py-2 rounded-xl font-bold text-sm transition-all ${currency === "USD" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+              >
+                USD
+              </button>
+            </div>
+
+            <div className="hidden md:block w-px h-6 bg-slate-200"></div>
+
+            <div className="flex items-center bg-slate-100 p-1.5 rounded-2xl">
+              <button 
+                onClick={() => setIncludeGST(false)}
+                className={`px-5 py-2 rounded-xl font-bold text-sm transition-all ${!includeGST ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+              >
+                Exclude GST
+              </button>
+              <button 
+                onClick={() => setIncludeGST(true)}
+                className={`px-5 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${includeGST ? "bg-white text-blue-600 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+              >
+                Include 18% GST
+              </button>
+            </div>
+          </div>
+
+          <div className="text-center mb-10 h-6">
+            {currency === "USD" && isRateLive && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
+                <TrendingUp size={14} /> Live Rate: 1 USD = ₹{exchangeRate.toFixed(2)}
+              </span>
+            )}
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8 items-center">
@@ -277,14 +393,23 @@ export default function Home() {
                   </div>
                 )}
                 
-                <div className="text-center border-b border-slate-200/20 pb-8 mb-8">
-                  <h3 className="text-2xl font-black mb-3">{plan.title}</h3>
+                <div className="text-center border-b border-slate-200/20 pb-8 mb-8 relative pt-2">
+                  <div className="absolute -top-4 right-0 left-0 flex justify-center">
+                    <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                      <Settings size={12} /> Managed Service
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-2xl font-black mb-3 mt-6">{plan.title}</h3>
                   <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-6 ${plan.isPopular ? "bg-slate-800 text-blue-400" : "bg-blue-50 text-blue-600"}`}>
-                    {plan.badge}
+                     {plan.badge}
                   </div>
                   <div className="flex justify-center items-end gap-1">
-                    <span className="text-4xl xl:text-5xl font-black tracking-tighter">{plan.price}</span>
+                    <span className="text-4xl xl:text-5xl font-black tracking-tighter">{calculatePrice(plan.basePrice)}</span>
                     <span className={`text-sm font-bold mb-2 ${plan.isPopular ? "text-slate-400" : "text-slate-500"}`}>/month</span>
+                  </div>
+                  <div className="mt-2 text-xs font-medium text-slate-400">
+                    {includeGST ? "Including 18% GST" : "Excluding GST"}
                   </div>
                 </div>
                 
@@ -296,21 +421,25 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                
-                <button className={`w-full mt-auto py-4 rounded-2xl font-black tracking-wide transition-all duration-300 ${
-                  plan.isPopular 
-                    ? "bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/30" 
-                    : "bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white"
-                }`}>
-                  Configure Server
-                </button>
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I am interested in the ${plan.title} plan priced at ${calculatePrice(plan.basePrice)} (${currency}, ${includeGST ? 'including GST' : 'excluding GST'}).`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full mt-auto py-4 rounded-2xl font-black tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${
+                    plan.isPopular 
+                      ? "bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/30" 
+                      : "bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white"
+                  }`}
+                >
+                  <MessageCircle size={20} />
+                  Order on WhatsApp
+                </a>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- TECHNICAL AUTHORITY --- */}
       <section className="py-32 container mx-auto px-6 border-t border-slate-100">
         <div className="flex flex-col lg:flex-row gap-24 items-start">
           <div className="lg:w-1/2">
@@ -345,7 +474,7 @@ export default function Home() {
                <div className="space-y-6 relative z-10">
                  {[
                    { label: "Virtualization", val: "KVM (Kernel-based VM)" },
-                   { label: "Hardware", val: "AMD EPYC™ / Intel® Xeon®" },
+                   { label: "Hardware", val: "AMD EPYC / Intel Xeon" },
                    { label: "Networking", val: "10 Gbps Redundant Uplinks" },
                    { label: "Storage", val: "NVMe Gen5" },
                    { label: "Uptime SLA", val: "99.99% Guaranteed" },
@@ -365,21 +494,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- NEW: COMPANY STATS (FROM IMAGE 1) --- */}
       <section className="py-20 bg-gradient-to-r from-slate-900 via-[#1e293b] to-slate-900 text-white relative overflow-hidden border-y border-slate-800">
-        {/* Background gradient overlay to match image vibe */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10 opacity-50 mix-blend-overlay pointer-events-none"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center divide-x divide-white/10">
             {[
-              { num: "3", label: "Hosting Completed" },
-              { num: "8", label: "Happy Client" },
-              { num: "16", label: "Support Project Completed" },
-              { num: "16", label: "Cup Of Tea" },
+              { num: "20+", label: "Hosting Completed" },
+              { num: "15+", label: "Happy Client" },
+              { num: "25+", label: "Support Project Completed" },
+              { num: "20+", label: "Cup Of Tea" },
             ].map((stat, i) => (
               <div key={i} className="flex flex-col items-center justify-center p-4">
                 <span className="text-5xl md:text-7xl font-black mb-4 drop-shadow-md">{stat.num}</span>
-                {/* Small orange accent line just like the image */}
                 <div className="w-8 h-1 bg-orange-500 rounded-full mb-4 opacity-80"></div>
                 <span className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-300">{stat.label}</span>
               </div>
@@ -388,18 +514,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- NEW: CLIENT FEEDBACK (FROM IMAGE 2) --- */}
-      <section className="py-32 bg-white">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
+      <section className="py-32 bg-white overflow-hidden">
+        <div className="container mx-auto px-6 max-w-5xl text-center">
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 uppercase tracking-tighter mb-4">
             Clients Feedback
           </h2>
           <div className="w-16 h-1 bg-orange-500 mx-auto mb-6 rounded-full"></div>
-          <p className="text-slate-500 font-medium mb-16 text-lg">
-            Here's what our valued clients say about our reliable hosting services and dedicated customer support.
+          <p className="text-slate-500 font-medium mb-16 text-lg max-w-2xl mx-auto">
+            Here is what our valued clients say about our reliable hosting services and dedicated customer support.
           </p>
 
-          {/* Testimonial Avatars */}
           <div className="flex justify-center items-center gap-4 mb-12">
             {testimonials.map((test, i) => (
               <button 
@@ -416,39 +540,53 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Testimonial Content */}
-          <div className="bg-slate-50 p-10 md:p-14 rounded-[40px] border border-slate-100 relative">
-            <Quote className="absolute top-6 left-6 text-slate-200/50 w-20 h-20 -z-0" />
-            <div className="relative z-10">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTestimonial}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <p className="text-2xl md:text-3xl font-medium text-slate-800 leading-relaxed mb-8">
-                    "{testimonials[activeTestimonial].quote}"
-                  </p>
-                  <div className="font-bold text-slate-900 tracking-wider">
-                    {testimonials[activeTestimonial].author}
-                  </div>
-                  <div className="flex justify-center gap-1 text-orange-400 mt-3">
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+          <div className="relative">
+            <button 
+              onClick={prevTestimonial}
+              className="absolute left-0 md:-left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-100 text-slate-400 hover:text-blue-600 hover:scale-110 transition-all"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            <button 
+              onClick={nextTestimonial}
+              className="absolute right-0 md:-right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-100 text-slate-400 hover:text-blue-600 hover:scale-110 transition-all"
+            >
+              <ChevronRight size={24} />
+            </button>
+
+            <div className="bg-slate-50 p-10 md:p-14 rounded-[40px] border border-slate-100 relative mx-4 md:mx-0">
+              <Quote className="absolute top-6 left-6 text-slate-200/50 w-20 h-20 z-0" />
+              <div className="relative z-10 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTestimonial}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                  >
+                    <p className="text-2xl md:text-3xl font-medium text-slate-800 leading-relaxed mb-8">
+                      {testimonials[activeTestimonial].quote}
+                    </p>
+                    <div className="font-bold text-slate-900 tracking-wider">
+                      {testimonials[activeTestimonial].author}
+                    </div>
+                    <div className="flex justify-center gap-1 text-orange-400 mt-3">
+                      <Star size={16} fill="currentColor" />
+                      <Star size={16} fill="currentColor" />
+                      <Star size={16} fill="currentColor" />
+                      <Star size={16} fill="currentColor" />
+                      <Star size={16} fill="currentColor" />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- MEGA FAQ --- */}
       <section className="py-32 bg-slate-50 border-t border-slate-100">
         <div className="container mx-auto px-6 max-w-4xl">
           <h2 className="text-4xl font-black text-center text-slate-900 mb-20">Frequently Asked <span className="text-blue-600">Questions</span></h2>

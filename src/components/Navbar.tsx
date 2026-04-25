@@ -8,10 +8,9 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: "VPS", href: "/vps", icon: <Globe className="h-4 w-4" /> },
+    { name: "Linux VPS", href: "/vps", icon: <Globe className="h-4 w-4" /> },
     { name: "Cluster", href: "/cluster", icon: <Layers className="h-4 w-4" /> },
     { name: "Locations", href: "/locations", icon: <MapPin className="h-4 w-4" /> },
-    // NAYA LINK ADD KIYA HAI YAHAN 👇
     { name: "IT Support", href: "/remote-it-support", icon: <Headset className="h-4 w-4" /> },
   ];
 
@@ -19,13 +18,13 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-100">
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
         
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="bg-blue-600 p-2 rounded-xl group-hover:rotate-12 transition-transform">
-            <Server className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">
-            Server<span className="text-blue-600">Bucket</span>
-          </span>
+        {/* UPDATED LOGO SECTION 👇 */}
+        <Link href="/" className="flex items-center group">
+          <img 
+            src="titlogo.png" 
+            alt="Logo" 
+            className="h-15 w-auto group-hover:scale-105 transition-transform" 
+          />
         </Link>
 
         <div className="hidden lg:flex items-center gap-8 text-[14px] font-bold text-slate-600">
@@ -38,9 +37,13 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link href="/contact" className="hidden md:block text-sm font-bold text-slate-900 px-4">Support</Link>
-          <Link href="/vps" className="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-100 hover:bg-slate-900 transition-all">
-            Get Started
+          {/* Replaced Support with Login */}
+          <Link href="https://manage.titservices.online/" className="hidden md:block text-sm font-bold text-slate-900 px-4 hover:text-blue-600 transition-colors">
+            Login
+          </Link>
+          {/* Replaced Get Started with Billing */}
+          <Link href="https://billing.titservices.online/" className="hidden md:block text-sm font-bold text-slate-900 px-4 hover:text-blue-600 transition-colors">
+            Billing
           </Link>
           <button className="lg:hidden p-2" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X /> : <Menu />}
@@ -63,7 +66,9 @@ export default function Navbar() {
                 </Link>
               ))}
               <Link href="/blog" onClick={() => setIsOpen(false)}>Blog</Link>
-              <Link href="/contact" onClick={() => setIsOpen(false)}>Contact Support</Link>
+              {/* Added Mobile Links for Login & Billing */}
+              <Link href="https://manage.titservices.online/" onClick={() => setIsOpen(false)}>Login</Link>
+              <Link href="https://billing.titservices.online/" onClick={() => setIsOpen(false)}>Billing</Link>
             </div>
           </motion.div>
         )}

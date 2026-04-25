@@ -3,17 +3,10 @@ import { MapPin, Globe2, Server, Zap, Activity } from "lucide-react";
 
 const datacenters = [
   { region: "Asia Pacific", status: "Optimal", locations: [
-    { city: "Delhi, India", desc: "Tier-IV, Premium Asia Routing" },
-    { city: "Mumbai, India", desc: "Tier-III+, Direct Peering" },
-    { city: "Singapore", desc: "Major APAC Gateway" }
-  ]},
-  { region: "Europe", status: "Optimal", locations: [
-    { city: "Frankfurt, Germany", desc: "DE-CIX Peering" },
-    { city: "London, UK", desc: "LINX Peering Edge" }
+    { city: "Mumbai, India", desc: "Tier-III+, Direct Peering" }
   ]},
   { region: "Americas", status: "Optimal", locations: [
-    { city: "New York, USA", desc: "East Coast Hub" },
-    { city: "Los Angeles, USA", desc: "West Coast / APAC Link" }
+    { city: "Kansas City, USA", desc: "Central US Backbone Hub" }
   ]}
 ];
 
@@ -29,7 +22,7 @@ export default function LocationsPage() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
           {datacenters.map((dc, i) => (
             <div key={i} className="bg-slate-50 rounded-[40px] p-10 border border-slate-100">
               <div className="flex justify-between items-center mb-8 border-b border-slate-200 pb-6">

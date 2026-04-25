@@ -1,61 +1,43 @@
 "use client";
-import { Server, Activity, Users, ShieldCheck, Zap, Globe2 } from "lucide-react";
+import { User } from "lucide-react";
 
-export default function AboutPage() {
+export default function TeamPage() {
   return (
     <div className="bg-white">
-      {/* --- HERO --- */}
-      <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
+
+      <section className="py-16 bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
-          <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
-            Architecting the <br /> <span className="text-blue-500">Digital Backbone.</span>
+          <h1 className="text-5xl md:text-6xl font-black leading-tight tracking-tighter uppercase">
+            Our <span className="text-blue-500">Team</span>
           </h1>
-          <p className="mt-8 text-xl text-slate-300 font-medium leading-relaxed max-w-3xl mx-auto">
-            Server Bucket was engineered from the ground up to solve one problem: providing uncompromised, raw compute power at scale for the developers of tomorrow.
+          <p className="mt-6 text-lg text-slate-300 font-medium leading-relaxed max-w-3xl mx-auto">
+            We take pride in our team of highly skilled and dedicated professionals — the true heroes behind our success. Their expertise, commitment, and innovative approach help us deliver faster, smarter, and more efficient solutions for our clients.
           </p>
         </div>
       </section>
 
-      {/* --- STATS --- */}
-      <section className="container mx-auto px-6 -mt-10 relative z-20 mb-24">
-        <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-slate-100">
-          {[
-            { num: "25+", label: "Datacenters" },
-            { num: "100G", label: "Network Edge" },
-            { num: "99.99%", label: "Uptime SLA" },
-            { num: "24/7", label: "NOC Support" },
-          ].map((s, i) => (
-             <div key={i} className="px-4">
-                <p className="text-4xl font-black text-blue-600 mb-2">{s.num}</p>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</p>
-             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* --- INFRASTRUCTURE VALUES --- */}
-      <section className="py-24 bg-slate-50 border-y border-slate-100">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mb-16">
-            <h2 className="text-4xl font-black text-slate-900">Our <span className="text-blue-600">Infrastructure</span> DNA</h2>
-            <p className="text-lg text-slate-500 mt-4">We do not lease cheap hardware. Every node is custom-built using enterprise-grade components.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {[
-              { icon: <Zap />, title: "NVMe Only", desc: "We've completely phased out SATA SSDs. Our entire fleet runs on Gen4/Gen5 NVMe storage for maximum IOPS." },
-              { icon: <ShieldCheck />, title: "Automated Security", desc: "Inline hardware DDoS mitigation scrubs malicious traffic before it ever reaches your server port." },
-              { icon: <Activity />, title: "Redundant Core", desc: "Multiple 100Gbps fiber rings connect our datacenters, ensuring zero packet loss during route failures." }
-            ].map((v, i) => (
-              <div key={i} className="bg-white p-10 rounded-[40px] shadow-sm hover:shadow-xl transition-shadow border border-slate-100">
-                <div className="h-16 w-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-8">{v.icon}</div>
-                <h3 className="text-2xl font-black text-slate-900 mb-4">{v.title}</h3>
-                <p className="text-slate-500 leading-relaxed text-sm font-medium">{v.desc}</p>
+              { name: "Jitendra Sharma", role: "Founder and Proprietor" },
+              { name: "Harish Mishra", role: "Head of IT Infrastructure" },
+              { name: "Deepak Sharma", role: "Head of Business Development" },
+              { name: "Manisha Sharma", role: "Co-Founder and Administrator" }
+            ].map((member, i) => (
+              <div key={i} className="flex flex-col items-center text-center group bg-slate-50 p-8 rounded-[32px] border border-slate-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center mb-5 overflow-hidden border border-slate-200 shadow-sm">
+                  <User className="w-12 h-12 text-slate-300" />
+                </div>
+                <h3 className="text-xl font-black text-slate-900">{member.name}</h3>
+                <p className="text-sm font-bold text-blue-600 mt-2 uppercase tracking-wide">{member.role}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
+
     </div>
   );
 }

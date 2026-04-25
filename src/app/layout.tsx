@@ -7,12 +7,7 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Server Bucket | Enterprise Hosting Solutions",
-    template: "%s | Server Bucket"
-  },
-  description: "High-performance VPS, Bare Metal Dedicated Servers, and Cloud solutions powered by NVMe Gen5 and 10Gbps uplinks.",
-  keywords: ["VPS Hosting", "Dedicated Servers", "Server Bucket", "Cloud Hosting India", "Serverwala Alternative"],
+  title: "Titservices | Enterprise Hosting Solutions",
 };
 
 export default function RootLayout({

@@ -1,109 +1,220 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
-  Cpu, HardDrive, Network, Zap, Terminal, 
-  Monitor, Settings, RefreshCw, BarChart, CheckCircle2
+  Cpu, HardDrive, Network, Zap, 
+  Monitor, Settings, RefreshCw, BarChart, CheckCircle2, MessageCircle, TrendingUp
 } from "lucide-react";
 
-const vpsPlans = [
-  { name: "SB-SSD 1", cpu: "1 Core", ram: "2GB", ssd: "40GB NVMe", bw: "1TB", price: "₹499" },
-  { name: "SB-SSD 2", cpu: "2 Cores", ram: "4GB", ssd: "80GB NVMe", bw: "3TB", price: "₹899", popular: true },
-  { name: "SB-SSD 3", cpu: "4 Cores", ram: "8GB", ssd: "160GB NVMe", bw: "5TB", price: "₹1,699" },
-  { name: "SB-SSD 4", cpu: "8 Cores", ram: "16GB", ssd: "320GB NVMe", bw: "10TB", price: "₹3,299" },
-  { name: "SB-SSD 5", cpu: "16 Cores", ram: "32GB", ssd: "640GB NVMe", bw: "20TB", price: "₹6,499" },
-  { name: "SB-SSD 6", cpu: "32 Cores", ram: "64GB", ssd: "1.2TB NVMe", bw: "50TB", price: "₹12,999" },
+interface VPSPlan {
+  name: string;
+  cpu: string;
+  ram: string;
+  ssd: string;
+  bw: string;
+  basePrice: number;
+  popular?: boolean;
+}
+
+const vpsPlans: VPSPlan[] = [
+  { name: "KVM VPS-1", cpu: "2 Cores", ram: "4GB", ssd: "100GB NVMe", bw: "Unlimited", basePrice: 699 },
+  { name: "KVM VPS-2", cpu: "4 Cores", ram: "8GB", ssd: "150GB NVMe", bw: "Unlimited", basePrice: 999, popular: true },
+  { name: "KVM VPS-3", cpu: "6 Cores", ram: "16GB", ssd: "200GB NVMe", bw: "Unlimited", basePrice: 1699 },
+  { name: "KVM VPS-4", cpu: "8 Cores", ram: "32GB", ssd: "250GB NVMe", bw: "Unlimited", basePrice: 2199 },
 ];
 
 export default function VPSPage() {
+  const WHATSAPP_NUMBER: string = "919876543210";
+  const [currency, setCurrency] = useState<"INR" | "USD">("INR");
+  const [includeGST, setIncludeGST] = useState<boolean>(false);
+  const [exchangeRate, setExchangeRate] = useState<number>(83.50);
+  const [isRateLive, setIsRateLive] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      try {
+        const response = await fetch("/api/rate");
+        const data = await response.json();
+        if (data.rate) {
+          setExchangeRate(data.rate);
+          setIsRateLive(true);
+        }
+      } catch (err) {
+        console.error("Failed to fetch live rate");
+      }
+    };
+    fetchLiveRate();
+  }, []);
+
+  const GST_RATE: number = 0.18;
+
+  const calculatePrice = (basePrice: number): string => {
+    let finalPrice = basePrice;
+    if (includeGST) {
+      finalPrice = finalPrice + (finalPrice * GST_RATE);
+    }
+    
+    if (currency === "USD") {
+      finalPrice = finalPrice / exchangeRate;
+      return "$" + finalPrice.toFixed(2);
+    }
+    
+    return "₹" + Math.round(finalPrice).toString();
+  };
+
   return (
-    <div className="bg-white">
-      {/* Header */}
-      <section className="py-24 bg-slate-50 border-b border-slate-100">
+    <div className="bg-[#F0EEE9]">
+      
+      <section className="py-12 border-b border-slate-200/50">
         <div className="container mx-auto px-6 max-w-4xl text-center">
           <span className="text-blue-600 font-black uppercase tracking-widest text-xs bg-blue-100 px-4 py-1.5 rounded-full">High Density Compute</span>
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 mt-8 leading-tight tracking-tighter">
+          <h1 className="text-5xl md:text-6xl font-black text-slate-900 mt-4 leading-tight tracking-tighter">
             Next-Gen <span className="text-blue-600">NVMe VPS</span>
           </h1>
-          <p className="mt-6 text-xl text-slate-500 leading-relaxed font-medium">
+          <p className="mt-4 text-lg text-slate-600 leading-relaxed font-medium">
             Unleash the full potential of KVM virtualization. Optimized for high-traffic websites, databases, and heavy enterprise applications.
           </p>
         </div>
       </section>
 
-      {/* Pricing Grid */}
-      <section className="py-24 container mx-auto px-6">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="py-12 container mx-auto px-6">
+        
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-6 bg-white p-3 rounded-3xl shadow-sm border border-slate-200 max-w-3xl mx-auto">
+          
+          <div className="flex items-center bg-slate-100 p-1.5 rounded-2xl">
+            <button 
+              onClick={() => setCurrency("INR")}
+              className={`px-5 py-2 rounded-xl font-bold text-sm transition-all ${currency === "INR" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+            >
+              INR 
+            </button>
+            <button 
+              onClick={() => setCurrency("USD")}
+              className={`px-5 py-2 rounded-xl font-bold text-sm transition-all ${currency === "USD" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+            >
+              USD
+            </button>
+          </div>
+
+          <div className="hidden md:block w-px h-6 bg-slate-200"></div>
+
+          <div className="flex items-center bg-slate-100 p-1.5 rounded-2xl">
+            <button 
+              onClick={() => setIncludeGST(false)}
+              className={`px-5 py-2 rounded-xl font-bold text-sm transition-all ${!includeGST ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+            >
+              Exclude GST
+            </button>
+            <button 
+              onClick={() => setIncludeGST(true)}
+              className={`px-5 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${includeGST ? "bg-white text-blue-600 shadow-md" : "text-slate-500 hover:text-slate-900"}`}
+            >
+              Include 18% GST
+            </button>
+          </div>
+        </div>
+
+        <div className="text-center mb-10 h-6">
+          {currency === "USD" && isRateLive && (
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
+              <TrendingUp size={14} /> Live Rate: 1 USD = ₹{exchangeRate.toFixed(2)}
+            </span>
+          )}
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {vpsPlans.map((plan, i) => (
             <motion.div 
               key={i}
-              whileHover={{ y: -10 }}
-              className={`p-10 rounded-[40px] border-2 ${plan.popular ? 'border-blue-600 bg-blue-50/20 shadow-2xl shadow-blue-100' : 'border-slate-100 bg-white shadow-sm hover:shadow-xl'} transition-all`}
+              whileHover={{ y: -5 }}
+              className={`relative p-6 rounded-[24px] border-2 pt-10 ${plan.popular ? 'border-blue-600 bg-blue-50/20 shadow-xl shadow-blue-100' : 'border-slate-100 bg-white shadow-sm hover:shadow-lg'} transition-all flex flex-col`}
             >
-              {plan.popular && <span className="bg-blue-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase mb-6 inline-block">Most Recommended</span>}
-              <h3 className="text-2xl font-black text-slate-900 mb-2">{plan.name}</h3>
-              <div className="text-5xl font-black text-slate-900 my-8">{plan.price}<span className="text-sm font-medium text-slate-400">/mo</span></div>
+              <div className="absolute -top-3.5 right-0 left-0 flex justify-center">
+                 <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                    <Settings size={12} /> Managed Service
+                 </span>
+              </div>
               
-              <div className="space-y-5 mb-10 border-t border-slate-100 pt-8">
-                <div className="flex items-center justify-between text-sm font-bold">
-                  <span className="text-slate-500 flex items-center gap-2"><Cpu size={18} className="text-blue-600"/> vCPU</span>
-                  <span className="text-slate-900 text-lg">{plan.cpu}</span>
+              <div>
+                <div className="h-6 mb-2 text-center">
+                  {plan.popular && <span className="bg-blue-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase inline-block">Most Recommended</span>}
                 </div>
-                <div className="flex items-center justify-between text-sm font-bold">
-                  <span className="text-slate-500 flex items-center gap-2"><Network size={18} className="text-blue-600"/> DDR4 RAM</span>
-                  <span className="text-slate-900 text-lg">{plan.ram}</span>
+                <h3 className="text-xl font-black text-slate-900 mb-1 text-center">{plan.name}</h3>
+                <div className="text-3xl font-black text-slate-900 mt-2 mb-1 text-center">
+                  {calculatePrice(plan.basePrice)}
+                  <span className="text-sm font-medium text-slate-400">/mo</span>
                 </div>
-                <div className="flex items-center justify-between text-sm font-bold">
-                  <span className="text-slate-500 flex items-center gap-2"><HardDrive size={18} className="text-blue-600"/> NVMe Storage</span>
-                  <span className="text-slate-900 text-lg">{plan.ssd}</span>
+                <div className="text-xs font-medium text-slate-400 mb-4 h-4 text-center">
+                  {includeGST ? "Including 18% GST" : "Excluding GST"}
                 </div>
-                <div className="flex items-center justify-between text-sm font-bold">
-                  <span className="text-slate-500 flex items-center gap-2"><Zap size={18} className="text-blue-600"/> Bandwidth</span>
-                  <span className="text-slate-900 text-lg">{plan.bw}</span>
+                
+                <div className="space-y-3 mb-6 border-t border-slate-100 pt-6">
+                  <div className="flex items-center justify-between text-sm font-bold">
+                    <span className="text-slate-500 flex items-center gap-2"><Cpu size={16} className="text-blue-600"/> vCPU</span>
+                    <span className="text-slate-900">{plan.cpu}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm font-bold">
+                    <span className="text-slate-500 flex items-center gap-2"><Network size={16} className="text-blue-600"/> RAM</span>
+                    <span className="text-slate-900">{plan.ram}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm font-bold">
+                    <span className="text-slate-500 flex items-center gap-2"><HardDrive size={16} className="text-blue-600"/> Storage</span>
+                    <span className="text-slate-900">{plan.ssd}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm font-bold">
+                    <span className="text-slate-500 flex items-center gap-2"><Zap size={16} className="text-blue-600"/> Bandwidth</span>
+                    <span className="text-slate-900">{plan.bw}</span>
+                  </div>
                 </div>
               </div>
 
-              <button className={`w-full py-5 rounded-2xl font-black text-lg shadow-xl transition-all ${plan.popular ? 'bg-blue-600 text-white hover:bg-slate-900' : 'bg-slate-900 text-white hover:bg-blue-600'}`}>
-                Deploy Instance
-              </button>
+              <a 
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I am interested in the ${plan.name} plan priced at ${calculatePrice(plan.basePrice)} (${currency}, ${includeGST ? 'including GST' : 'excluding GST'}).`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-full py-3 rounded-xl font-black text-sm shadow-md transition-all mt-auto flex items-center justify-center gap-2 ${plan.popular ? 'bg-blue-600 text-white hover:bg-slate-900' : 'bg-slate-900 text-white hover:bg-blue-600'}`}
+              >
+                <MessageCircle size={16} />
+                Order on WhatsApp
+              </a>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features & Terminal Area */}
-      <section className="py-24 bg-slate-50 border-t border-slate-100">
-        <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+      <section className="py-12 border-t border-slate-200/50">
+        <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <h2 className="text-4xl font-black text-slate-900 mb-6">Advanced Server <br /><span className="text-blue-600">Control Panel</span></h2>
-            <p className="text-slate-500 mb-10 text-lg">Manage your infrastructure effortlessly with our custom-built dashboard or via our robust developer API.</p>
-            <div className="grid grid-cols-2 gap-8">
+            <h2 className="text-3xl font-black text-slate-900 mb-4">Advanced Server <br /><span className="text-blue-600">Control Panel</span></h2>
+            <p className="text-slate-600 mb-8 text-base">Manage your infrastructure effortlessly with our custom-built dashboard or via our robust developer API.</p>
+            <div className="grid grid-cols-2 gap-4">
               {[
                 { icon: <Monitor />, title: "Remote Console", desc: "Full VNC/SSH access directly from your browser." },
-                { icon: <RefreshCw />, title: "Instant OS Reload", desc: "Change OS (Ubuntu, CentOS, Debian) with one click." },
+                { icon: <RefreshCw />, title: "Instant OS Reload", desc: "Change OS with one click." },
                 { icon: <BarChart />, title: "Usage Analytics", desc: "Monitor bandwidth, CPU, and RAM in real-time." },
                 { icon: <Settings />, title: "API Control", desc: "Full infrastructure control via our RESTful API." },
               ].map((f, i) => (
-                <div key={i} className="space-y-3 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="h-12 w-12 bg-blue-50 text-blue-600 flex items-center justify-center rounded-xl">{f.icon}</div>
-                  <h4 className="font-bold text-slate-900">{f.title}</h4>
+                <div key={i} className="space-y-2 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                  <div className="h-10 w-10 bg-blue-50 text-blue-600 flex items-center justify-center rounded-lg">{f.icon}</div>
+                  <h4 className="font-bold text-slate-900 text-sm">{f.title}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed">{f.desc}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="p-10 bg-[#0f172a] rounded-[50px] shadow-2xl relative">
-             <div className="absolute top-4 left-6 flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="p-8 bg-[#0f172a] rounded-[32px] shadow-xl relative">
+             <div className="absolute top-4 left-5 flex gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
              </div>
-             <div className="mt-8 font-mono text-sm leading-loose">
-                <p className="text-blue-400">$ serverbucket login --api-key=****************</p>
+             <div className="mt-4 font-mono text-xs leading-loose">
+                <p className="text-blue-400">$ serverbucket login --api-key=xxxxxxxx</p>
                 <p className="text-slate-300">Authenticated as: admin@serverbucket.com</p>
                 <br />
-                <p className="text-white">$ serverbucket deploy --plan=SB-SSD-2 --os=ubuntu-24.04</p>
-                <p className="text-slate-400">Provisioning node... [████████████████████] 100%</p>
-                <p className="text-green-400 flex items-center gap-2"><CheckCircle2 size={16}/> SUCCESS: Instance "sb-prod-01" deployed in 52s.</p>
+                <p className="text-white">$ serverbucket deploy --plan=Linux-Server-2</p>
+                <p className="text-slate-400">Provisioning node... [████████████████] 100%</p>
+                <p className="text-green-400 flex items-center gap-2"><CheckCircle2 size={14}/> SUCCESS: Instance deployed in 52s.</p>
                 <br />
                 <p className="text-white">$ serverbucket status</p>
                 <p className="text-blue-300">ID: 9841 | IP: 103.22.XX.XX | STATUS: ACTIVE</p>

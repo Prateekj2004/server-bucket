@@ -29,7 +29,7 @@ export default function BlogPost() {
           </h1>
           
           <div className="flex flex-wrap items-center gap-6 mt-8 text-slate-400 text-sm border-b border-slate-100 pb-8">
-            <div className="flex items-center gap-2"><User size={16} /> By Server Bucket Team</div>
+            {/* <div className="flex items-center gap-2"><User size={16} /> By Server Bucket Team</div> */}
             <div className="flex items-center gap-2"><Calendar size={16} /> March 2026</div>
             <button className="flex items-center gap-2 ml-auto text-blue-600 font-bold"><Share2 size={16} /> Share Post</button>
           </div>
