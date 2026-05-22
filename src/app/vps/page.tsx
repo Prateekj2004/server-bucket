@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Cpu, HardDrive, Network, Zap, 
-  Monitor, Settings, RefreshCw, BarChart, CheckCircle2, MessageCircle, TrendingUp
+  Monitor, Settings, RefreshCw, BarChart, CheckCircle2, MessageCircle, TrendingUp, X
 } from "lucide-react";
 
 interface VPSPlan {
@@ -17,10 +17,10 @@ interface VPSPlan {
 }
 
 const vpsPlans: VPSPlan[] = [
-  { name: "KVM VPS-1", cpu: "2 Cores", ram: "4GB", ssd: "100GB NVMe", bw: "Unlimited", basePrice: 699 },
-  { name: "KVM VPS-2", cpu: "4 Cores", ram: "8GB", ssd: "150GB NVMe", bw: "Unlimited", basePrice: 999, popular: true },
-  { name: "KVM VPS-3", cpu: "6 Cores", ram: "16GB", ssd: "200GB NVMe", bw: "Unlimited", basePrice: 1699 },
-  { name: "KVM VPS-4", cpu: "8 Cores", ram: "32GB", ssd: "250GB NVMe", bw: "Unlimited", basePrice: 2199 },
+  { name: "KVM VPS-1", cpu: "2 Cores", ram: "4GB", ssd: "100GB NVMe", bw: "Unlimited", basePrice: 1499 },
+  { name: "KVM VPS-2", cpu: "4 Cores", ram: "8GB", ssd: "150GB NVMe", bw: "Unlimited", basePrice: 1999, popular: true },
+  { name: "KVM VPS-3", cpu: "6 Cores", ram: "16GB", ssd: "200GB NVMe", bw: "Unlimited", basePrice: 2499 },
+  { name: "KVM VPS-4", cpu: "8 Cores", ram: "32GB", ssd: "250GB NVMe", bw: "Unlimited", basePrice: 2999 },
 ];
 
 export default function VPSPage() {
@@ -29,6 +29,20 @@ export default function VPSPage() {
   const [includeGST, setIncludeGST] = useState<boolean>(false);
   const [exchangeRate, setExchangeRate] = useState<number>(83.50);
   const [isRateLive, setIsRateLive] = useState<boolean>(false);
+
+  // Modal States
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState<boolean>(false);
+  const [selectedPlan, setSelectedPlan] = useState<VPSPlan | null>(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    domain: "",
+    country: "",
+    serverLocation: "INDIA", // Default selection
+    comment: ""
+  });
 
   useEffect(() => {
     const fetchLiveRate = async () => {
@@ -60,6 +74,55 @@ export default function VPSPage() {
     }
     
     return "₹" + Math.round(finalPrice).toString();
+  };
+
+  // Handlers for the Modal and Form
+  const handleOrderClick = (plan: VPSPlan) => {
+    setSelectedPlan(plan);
+    setIsOrderModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOrderModalOpen(false);
+    setSelectedPlan(null);
+    setFormData({ 
+      firstName: "", 
+      lastName: "", 
+      email: "", 
+      phone: "", 
+      domain: "", 
+      country: "", 
+      serverLocation: "INDIA", 
+      comment: "" 
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleOrderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPlan) return;
+
+    const price = calculatePrice(selectedPlan.basePrice);
+    const gstText = includeGST ? "including GST" : "excluding GST";
+
+    const message = `*NEW ORDER REQUEST*%0A%0A` +
+      `*PLAN DETAILS:*%0A` +
+      `- Plan: ${selectedPlan.name}%0A` +
+      `- Server Location: ${formData.serverLocation}%0A` +
+      `- Price: ${price} (${currency}, ${gstText})%0A%0A` +
+      `*CUSTOMER DETAILS:*%0A` +
+      `- Name: ${formData.firstName} ${formData.lastName}%0A` +
+      `- Email: ${formData.email}%0A` +
+      `- Mobile: ${formData.phone}%0A` +
+      `- Country: ${formData.country}%0A` +
+      `- Company/Domain: ${formData.domain}%0A` +
+      `- Comment: ${formData.comment ? formData.comment : 'None'}`;
+
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+    handleCloseModal();
   };
 
   return (
@@ -168,15 +231,12 @@ export default function VPSPage() {
                 </div>
               </div>
 
-              <a 
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I am interested in the ${plan.name} plan priced at ${calculatePrice(plan.basePrice)} (${currency}, ${includeGST ? 'including GST' : 'excluding GST'}).`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button 
+                onClick={() => handleOrderClick(plan)}
                 className={`w-full py-3 rounded-xl font-black text-sm shadow-md transition-all mt-auto flex items-center justify-center gap-2 ${plan.popular ? 'bg-blue-600 text-white hover:bg-slate-900' : 'bg-slate-900 text-white hover:bg-blue-600'}`}
               >
-                <MessageCircle size={16} />
-                Order on WhatsApp
-              </a>
+                Order Now
+              </button>
             </motion.div>
           ))}
         </div>
@@ -222,6 +282,152 @@ export default function VPSPage() {
           </div>
         </div>
       </section>
+
+      {/* Expanded Order Modal */}
+      <AnimatePresence>
+        {isOrderModalOpen && selectedPlan && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-900/60 backdrop-blur-sm py-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col"
+            >
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-10"
+                aria-label="Close modal"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="p-8 overflow-y-auto">
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Complete Your Order</h3>
+                <p className="text-slate-500 mb-6 text-sm">
+                  You are ordering <span className="font-bold text-blue-600">{selectedPlan.name}</span> for {calculatePrice(selectedPlan.basePrice)}
+                </p>
+
+                <form onSubmit={handleOrderSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">First Name <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        required
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Last Name <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        required
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Mobile No <span className="text-red-500">*</span></label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="+91..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Email <span className="text-red-500">*</span></label>
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Company / Domain Name <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      name="domain"
+                      required
+                      value={formData.domain}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                      placeholder="example.com"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Country <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        name="country"
+                        required
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="India"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Server Location <span className="text-red-500">*</span></label>
+                      <select
+                        name="serverLocation"
+                        required
+                        value={formData.serverLocation}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm bg-white"
+                      >
+                        <option value="INDIA">India</option>
+                        <option value="US">United States (US)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Comment (if any)</label>
+                    <textarea
+                      name="comment"
+                      rows={2}
+                      value={formData.comment}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm resize-none"
+                      placeholder="Any specific requirements..."
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    className="w-full mt-4 py-4 rounded-xl font-black tracking-wide bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle size={20} />
+                    Send Order via WhatsApp
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

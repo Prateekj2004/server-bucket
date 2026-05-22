@@ -11,79 +11,95 @@ const GDPRCompliance = () => {
         <div className="space-y-10 leading-relaxed text-slate-700">
           {/* Section 1 */}
           <section>
-            <br /><br /><br />
-            <h2 className="text-xl font-bold text-slate-900 mb-3">1. General Data Protection Regulation (GDPR)</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-3 mt-20">1. General Data Protection Regulation (GDPR)</h2>
+            <p className="mb-4">
+              The General Data Protection Regulation (GDPR) is a European Union regulation that came into effect on May 25, 2018. It strengthens data protection and privacy for individuals within the European Economic Area (EEA). GDPR applies to any organization that processes personal data of individuals located in the EEA, regardless of where the organization is based.
+            </p>
+            <p className="mb-4">
+              Personal data includes, but is not limited to: name, address, identification numbers, location data, IP addresses, cookies, and sensitive data such as health, biometric, genetic, or ethnic information.
+            </p>
             <p>
-              GDPR(General Data Protection Regulation) is a new European Data Protection legislation activated on May 25, 2018, and proposed to consolidate and strengthen data protection for all individuals and businesses belonging to the European Union. GDPR ensures protection of users&apos; data, including Name, Address, ID number, Location, Cookies, Biometric, Ethenic Data, racial, genetic, Health, Plus Data concerning IP address, etc. It also substitutes the European Union Data Protection Directive that is known as Directive 95/46/EC. It also secures processing data and ensures transparency to let users easily control their data. Even though the GDPR is applicable only for the citizens who belong to Europe. But we have decided to go beyond and make it possible for all our users despite their citizenship or location.
+              At Tapasya IT Services, we are committed to protecting the privacy and security of all users, regardless of their location.
             </p>
           </section>
 
           {/* Section 2 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">2. When it comes to Customer Data, is Titservices a controller and a Processor?</h2>
-            <p>
-              Under the General Data Protection Regulation, a &quot;Controller&quot; regulates why and how European Citizens&apos; personal data is processed. Whereas a &quot;Processor&quot; ensures the processing of the Controller based personal data. TitServices has fine information of every customer&apos;s personal data via the hosting infrastructure. Also, the Titservices processes the customer&apos;s data under his approval and satisfaction. Therefore, we at Titservices are a processor of European Citizen data, and the customer is a controller.
-            </p>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">2. Data Controller and Processor</h2>
+            <p className="mb-2">Under GDPR:</p>
+            <ul className="list-disc pl-6 mb-4 space-y-1">
+              <li>A Data Controller determines how and why personal data is processed.</li>
+              <li>A Data Processor processes data on behalf of the Controller.</li>
+            </ul>
+            <p className="mb-2">In the context of our services:</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Customers act as Data Controllers.</li>
+              <li>Tapasya IT Services acts as a Data Processor when handling customer data.</li>
+            </ul>
           </section>
 
           {/* Section 3 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">3. How TitServices treats customer data as part of a GDPR?</h2>
-            <p>
-              TitServices treats customer data with the highest level of confidentiality and encrypted security. As we put security at the top of our list, offering advanced and standard security is our priority.
-            </p>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">3. Data Security and Protection</h2>
+            <p className="mb-2">We implement appropriate technical and organizational measures to protect personal data, including:</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Data encryption</li>
+              <li>Access control mechanisms</li>
+              <li>Secure infrastructure</li>
+              <li>Regular monitoring and updates</li>
+            </ul>
           </section>
 
           {/* Section 4 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">4. With the new GDPR, can an EU customer continue to host personal data outside of the EU/EEA?</h2>
-            <p>
-              Under the new General Data Protection Regulation, EU customers continue to host their personal data outside of the EU/EEA. But it can be done if the highest level of data protection is guaranteed.
-            </p>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">4. International Data Transfers</h2>
+            <p className="mb-2">Personal data may be transferred outside the EEA only when adequate safeguards are in place, such as:</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Standard Contractual Clauses (SCCs)</li>
+              <li>Compliance with applicable legal requirements</li>
+            </ul>
           </section>
 
           {/* Section 5 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">5. Won’t I breach the data protection laws if TitServices transfers my personal data outside the EU/EEA?</h2>
-            <p>
-              The updated laws allow TitServices to process and transfer your personal data outside the EEA(European Economic Area) if you approved of this. In other cases, if personal data of European Citizens transferred to a non-jurisdiction considered by the European Commission intends to provide the highest level of personal data protection.
-            </p>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">5. Data Subject Rights</h2>
+            <p className="mb-2">Users have the following rights under GDPR:</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Right to access their data</li>
+              <li>Right to correct inaccurate data</li>
+              <li>Right to request deletion</li>
+              <li>Right to restrict processing</li>
+              <li>Right to data portability</li>
+              <li>Right to object to processing</li>
+            </ul>
           </section>
 
           {/* Section 6 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">6. Can You Keep my data in the EU only?</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">6. Data Location</h2>
             <p>
-              Yes, we can. But you need to request the same to keep all your personal data in the European Union. For Example, if you do not belong to Europe but move your server to the EU, you will need to buy a new server in the European Union and manually move all your data.
+              Customers may request data hosting within specific regions (such as the EU), subject to infrastructure availability.
             </p>
           </section>
 
           {/* Section 7 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">7. Do you have other data centers within the EU where I can store my data?</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">7. Updates to Agreement</h2>
             <p>
-              No, we don&apos;t have another data center. But our TitServices Cloud Data Center is enough to accommodate your business requirements.
+              Customers can contact us to update agreements or request GDPR-related documentation.
             </p>
           </section>
 
           {/* Section 8 */}
-          <section>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">8. How do I update my current agreement with TitServices in light of GDPR?</h2>
-            <p>
-              You can raise a ticket and directly contact us for more information. We will give you the best possible solution.
-            </p>
-          </section>
-
-          {/* Section 9 */}
           <section className="bg-slate-50 p-6 rounded-lg border border-slate-100">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">9. Contacting Our Site</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-4">8. Contact Information</h2>
             <p className="mb-4 italic">
-              If you have any queries or any dilemma about our Privacy Policy, you have a choice to directly reach our customer executive or us.
+              For any privacy-related queries:
             </p>
             <div className="space-y-1 text-slate-700">
+              <p className="font-semibold text-slate-900">Tapasya IT Services</p>
               <p><strong>Email:</strong> info@titservices.online</p>
               <p><strong>Phone:</strong> +91 9799116204</p>
-              <p><strong>Address:</strong> Dausa, Rajasthan, India</p>
             </div>
           </section>
         </div>

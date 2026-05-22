@@ -45,8 +45,6 @@ export default function Footer() {
             <li><Link href="/about" className="hover:text-blue-500 transition-colors">Our Team</Link></li>
             <li><Link href="/locations" className="hover:text-blue-500 transition-colors">Data Centers</Link></li>
             <li><Link href="/contact" className="hover:text-blue-500 transition-colors">Contact Us</Link></li>
-            <li><Link href="/blog" className="hover:text-blue-500 transition-colors">Knowledge Base</Link></li>
-            <li><Link href="#" className="hover:text-blue-500 transition-colors">System Status</Link></li>
           </ul>
         </div>
 <div>
@@ -66,6 +64,12 @@ export default function Footer() {
         </div>
         <div className="flex-1 text-center">
            <p className="text-xs text-slate-400 font-bold bg-slate-800/50 inline-block px-4 py-1.5 rounded-full border border-slate-700">GSTIN - 08CODPS5125M1ZI</p>
+        </div>
+        <div className="flex-1 text-center">
+           <p className="text-xs text-slate-400 font-bold bg-slate-800/50 inline-block px-4 py-1.5 rounded-full border border-slate-700">TAN = JPRJ12009E</p>
+        </div>
+        <div className="flex-1 text-center">
+           <p className="text-xs text-slate-400 font-bold bg-slate-800/50 inline-block px-4 py-1.5 rounded-full border border-slate-700">IEC = CODPS5125M</p>
         </div>
         <div className="flex-1 flex justify-end gap-4">
            <Link href="#" className="text-slate-500 hover:text-white transition-colors"><Twitter size={20} /></Link>

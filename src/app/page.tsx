@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, Server, Terminal, Database, ChevronDown, Activity, 
   CheckCircle, Zap, Shield, Cpu, HardDrive, Globe, Star, Quote, MessageCircle, Settings,
-  ChevronLeft, ChevronRight, TrendingUp
+  ChevronLeft, ChevronRight, TrendingUp, X
 } from "lucide-react";
 
 interface HeroSlide {
@@ -71,6 +71,20 @@ export default function Home() {
   const [exchangeRate, setExchangeRate] = useState<number>(83.50);
   const [isRateLive, setIsRateLive] = useState<boolean>(false);
 
+  // New states for the expanded order modal
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState<boolean>(false);
+  const [selectedPlan, setSelectedPlan] = useState<VPSPlan | null>(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    domain: "",
+    country: "",
+    serverLocation: "INDIA", // Default selection
+    comment: ""
+  });
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -78,62 +92,58 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  // Replace your existing useEffect for fetchLiveRate with this:
-useEffect(() => {
-  const fetchLiveRate = async () => {
-    try {
-      // This calls the file we created in Step 1
-      const response = await fetch("/api/rate");
-      
-      if (!response.ok) {
-        throw new Error("API Route not responding");
-      }
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      try {
+        const response = await fetch("/api/rate");
+        
+        if (!response.ok) {
+          throw new Error("API Route not responding");
+        }
 
-      const data = await response.json();
-      
-      if (data.rate) {
-        setExchangeRate(data.rate);
-        setIsRateLive(true);
-        console.log("Live Rate Updated:", data.rate);
+        const data = await response.json();
+        
+        if (data.rate) {
+          setExchangeRate(data.rate);
+          setIsRateLive(true);
+        }
+      } catch (err) {
+        console.error("Live rate fetch failed. Using fallback.");
+        setIsRateLive(false); 
       }
-    } catch (err) {
-      // This stops the red console error from crashing your logic
-      console.error("Live rate fetch failed. Using fallback.");
-      setIsRateLive(false); 
-    }
-  };
+    };
 
-  fetchLiveRate();
-}, []);
+    fetchLiveRate();
+  }, []);
 
   const GST_RATE: number = 0.18;
 
   const vpsPlans: VPSPlan[] = [
     {
       title: "KVM VPS-1",
-      badge: "Save 30%",
-      basePrice: 699,
+      badge: "Save 70%",
+      basePrice: 1499,
       features: ["2 Core vCPU", "4 GB RAM", "100 GB NVMe", "Unlimited Bandwidth"],
       isPopular: false,
     },
     {
       title: "KVM VPS-2",
-      badge: "Save 30%",
-      basePrice: 999,
+      badge: "Save 70%",
+      basePrice: 1999,
       features: ["4 Core vCPU", "8 GB RAM", "150 GB NVMe", "Unlimited Bandwidth"],
       isPopular: true,
     },
     {
       title: "KVM VPS-3",
-      badge: "Save 30%",
-      basePrice: 1699,
+      badge: "Save 70%",
+      basePrice: 2499,
       features: ["6 Core vCPU", "16 GB RAM", "200 GB NVMe", "Unlimited Bandwidth"],
       isPopular: false,
     },
     {
       title: "KVM VPS-4",
-      badge: "Save 30%",
-      basePrice: 2199,
+      badge: "Save 70%",
+      basePrice: 2999,
       features: ["8 Core vCPU", "32 GB RAM", "250 GB NVMe", "Unlimited Bandwidth"],
       isPopular: false,
     },
@@ -186,6 +196,54 @@ useEffect(() => {
     }, 5000);
     return () => clearInterval(testimonialTimer);
   }, [testimonials.length]);
+
+  const handleOrderClick = (plan: VPSPlan) => {
+    setSelectedPlan(plan);
+    setIsOrderModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOrderModalOpen(false);
+    setSelectedPlan(null);
+    setFormData({ 
+      firstName: "", 
+      lastName: "", 
+      email: "", 
+      phone: "", 
+      domain: "", 
+      country: "", 
+      serverLocation: "INDIA", 
+      comment: "" 
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleOrderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPlan) return;
+
+    const price = calculatePrice(selectedPlan.basePrice);
+    const gstText = includeGST ? "including GST" : "excluding GST";
+
+    const message = `*NEW ORDER REQUEST*%0A%0A` +
+      `*PLAN DETAILS:*%0A` +
+      `- Plan: ${selectedPlan.title}%0A` +
+      `- Server Location: ${formData.serverLocation}%0A` +
+      `- Price: ${price} (${currency}, ${gstText})%0A%0A` +
+      `*CUSTOMER DETAILS:*%0A` +
+      `- Name: ${formData.firstName} ${formData.lastName}%0A` +
+      `- Email: ${formData.email}%0A` +
+      `- Mobile: ${formData.phone}%0A` +
+      `- Country: ${formData.country}%0A` +
+      `- Company/Domain: ${formData.domain}%0A` +
+      `- Comment: ${formData.comment ? formData.comment : 'None'}`;
+
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+    handleCloseModal();
+  };
 
   return (
     <div className="relative font-sans bg-white overflow-x-hidden text-slate-900">
@@ -421,19 +479,18 @@ useEffect(() => {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I am interested in the ${plan.title} plan priced at ${calculatePrice(plan.basePrice)} (${currency}, ${includeGST ? 'including GST' : 'excluding GST'}).`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+
+                <button
+                  onClick={() => handleOrderClick(plan)}
                   className={`w-full mt-auto py-4 rounded-2xl font-black tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${
                     plan.isPopular 
                       ? "bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/30" 
                       : "bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white"
                   }`}
                 >
-                  <MessageCircle size={20} />
-                  Order on WhatsApp
-                </a>
+                  Order Now
+                </button>
+
               </motion.div>
             ))}
           </div>
@@ -608,6 +665,152 @@ useEffect(() => {
           </div>
         </div>
       </section>
+
+      {/* Expanded Order Modal */}
+      <AnimatePresence>
+        {isOrderModalOpen && selectedPlan && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-900/60 backdrop-blur-sm py-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col"
+            >
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-10"
+                aria-label="Close modal"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="p-8 overflow-y-auto">
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Complete Your Order</h3>
+                <p className="text-slate-500 mb-6 text-sm">
+                  You are ordering <span className="font-bold text-blue-600">{selectedPlan.title}</span> for {calculatePrice(selectedPlan.basePrice)}
+                </p>
+
+                <form onSubmit={handleOrderSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">First Name <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        required
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Last Name <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        required
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Mobile No <span className="text-red-500">*</span></label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="+91..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Email <span className="text-red-500">*</span></label>
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Company / Domain Name <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      name="domain"
+                      required
+                      value={formData.domain}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                      placeholder="example.com"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Country <span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        name="country"
+                        required
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+                        placeholder="India"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Server Location <span className="text-red-500">*</span></label>
+                      <select
+                        name="serverLocation"
+                        required
+                        value={formData.serverLocation}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm bg-white"
+                      >
+                        <option value="INDIA">India</option>
+                        <option value="US">United States (US)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Comment (if any)</label>
+                    <textarea
+                      name="comment"
+                      rows={2}
+                      value={formData.comment}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm resize-none"
+                      placeholder="Any specific requirements..."
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    className="w-full mt-4 py-4 rounded-xl font-black tracking-wide bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle size={20} />
+                    Send Order via WhatsApp
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

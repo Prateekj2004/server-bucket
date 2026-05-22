@@ -38,7 +38,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           {/* Replaced Support with Login */}
-          <Link href="https://manage.titservices.online/" className="hidden md:block text-sm font-bold text-slate-900 px-4 hover:text-blue-600 transition-colors">
+          <Link href="https://management.titservices.online:10000/" className="hidden md:block text-sm font-bold text-slate-900 px-4 hover:text-blue-600 transition-colors">
             Login
           </Link>
           {/* Replaced Get Started with Billing */}
